@@ -1,0 +1,16 @@
+{
+    "nova_ext_discord_account_confirmation": {
+        "discord_id": {
+            "name": "Discord Id - Label",
+            "value": "Discord Ids"
+        },
+        "api_key": {
+            "name": "Api Key",
+            "value": "Api Keys"
+        }
+    },
+    "setting": {
+        "api_key": "935881401759330374",
+        "secret_key": "WMAWw3KNL26Lmu4O5WIKJlgRqx-kUQtb"
+    }
+}

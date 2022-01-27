@@ -1,0 +1,29 @@
+{
+	"name": "Discord Account Confirmation",
+	"version": "1.0.0",
+	"description": "",
+	"url": "https://github.com/reecesavage/nova-ext-discord-account-confirmation.git",
+	"author": {
+		"name": "Sim Central",
+		"email": "info@simcentral.org",
+		"url": "https://simcentral.org"
+	},
+	"folder": "nova_ext_discord_account_confirmation",
+	"requiredExtensions": [
+	],
+	"configFiles": [
+		"init.php",
+		"events/db.php"
+	],
+	"upgradeable": "yes",
+	"replaceConfigFiles":"yes",
+	"incompatibleExtensions":[ 
+            
+	],
+	"uninstall":[ 
+		 
+         
+	]
+
+	
+}
