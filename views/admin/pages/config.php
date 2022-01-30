@@ -1,20 +1,22 @@
 <?php echo text_output($title, 'h1', 'page-head');?>
 
 <?php echo form_open('extensions/nova_ext_discord_account_confirmation/Manage/config/');?>
+         
 
-<p>
-				<kbd>CLIENT ID</kbd>
-				<input type="text" name="api_key_value" value="<?=isset($jsons['setting']['api_key'])?$jsons['setting']['api_key']:''?>">	
+          <?php if(empty($jsons['setting']['api_key'])){ ?>
+               <p>No Discord Bot Credentials are stored.</p>
+          <?php }else { ?>
+                 <p><?=$jsons['setting']['bot_name']?> Discord Bot Credentials are stored.</p>
+         <?php  } ?>
+           <p>
+				<kbd>Game API Token</kbd>
+				<input type="text" name="apiToken" value="<?=isset($jsons['setting']['apiToken'])?$jsons['setting']['apiToken']:''?>">	
 			</p>
 
-			<p>
-				<kbd>CLIENT SECRET</kbd>
-				<input type="text" name="secret_key" value="<?=isset($jsons['setting']['secret_key'])?$jsons['setting']['secret_key']:''?>">	
-			</p>
 
 		
 			<br>
-			<button name="submit" type="submit" class="button-main" value="Submit"><span>Update Configuration</span></button>
+			<button name="submit" type="submit" class="button-main" value="Submit"><span>Rotate API Token</span></button>
 <?php echo form_close(); ?>
 
 

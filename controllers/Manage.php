@@ -51,7 +51,7 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
             if (in_array($attr, $requiredCharacterFields['user']) == true)
             {
-                $table = "nova_users";
+                $table = "{$prefix}users";
 
             }
             if (!empty($table))
@@ -94,7 +94,7 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         $data['title'] = 'Discord Account Setting';
         $requiredCharacterFields['user'] = ['discord_id'];
 
- $prefix= $this->db->dbprefix;
+ 
        
 
         if ($list = $this->saveColumn($requiredCharacterFields))
@@ -119,18 +119,11 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         }
         $file = file_get_contents($extConfigFilePath);
         $data['jsons'] = json_decode($file, true);
-
-
-
         if (isset($_POST['submit']) && $_POST['submit'] == 'Submit')
         {
 
-            
-
-             
-              $data['jsons']['setting']['api_key'] = $_POST['api_key_value'];
-               $data['jsons']['setting']['secret_key'] = $_POST['secret_key'];
-           
+              $data['jsons']['setting']['apiToken'] = $_POST['apiToken'];
+              
 
             $jsonEncode = json_encode($data['jsons'], JSON_PRETTY_PRINT);
 
@@ -149,13 +142,14 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
        
 
-    
-
-        $charFields = $this
+     $prefix= $this->db->dbprefix;
+     $table= "{$prefix}users";
+     $charFields = $this
             ->db
-            ->list_fields('nova_users');
+            ->list_fields("$table");
        
-
+        
+      
         $leftFields = [];
         foreach ($requiredCharacterFields['user'] as $key)
         {
@@ -199,7 +193,7 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         {  
 
           $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
-       $client_id= $_POST['api_key_value'];
+       $client_id= $data['jsons']['setting']['api_key'];
        $url= "https://discord.com/api/oauth2/authorize?response_type=code&client_id=$client_id&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=$redirect&prompt=consent";
         redirect($url);
         }
@@ -232,13 +226,33 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         $file = file_get_contents($extConfigFilePath);
         $json = json_decode($file, true);
 
+        $encryption=$json['setting']['secret_key'];
+
+        $ciphering = "AES-128-CTR";
+  
+// Use OpenSSl Encryption method
+$iv_length = openssl_cipher_iv_length($ciphering);
+$options = 0;
+
+
+// Non-NULL Initialization Vector for decryption
+$decryption_iv = '1234567891011121';
+  
+// Store the decryption key
+$decryption_key = "Nova";
+  
+// Use openssl_decrypt() function to decrypt the data
+$decryption=openssl_decrypt ($encryption, $ciphering, 
+        $decryption_key, $options, $decryption_iv);
+
+
 
           
 $url = 'https://discord.com/api/oauth2/token';
 $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
  $data = [
     'client_id'=> $json['setting']['api_key'],
-    'client_secret'=> $json['setting']['secret_key'],
+    'client_secret'=> $decryption,
     'grant_type'=> 'authorization_code',
     'code'=> $code,
     'redirect_uri'=> $redirect
@@ -284,7 +298,9 @@ $this->session->set_flashdata('success', "Discord id saved successfully");
 }
 
 }else {
-     $this->session->set_flashdata('error', "$result->error_description");
+
+
+     $this->session->set_flashdata('error', "$result->error");
 }
  
 redirect(site_url('extensions/nova_ext_discord_account_confirmation/Manage/discord'));

@@ -15,15 +15,10 @@
 	<p><?php echo $this->session->flashdata('success'); ?></p></div>
 <?php } ?>
 
-<p>
-				<kbd>CLIENT ID</kbd>
-				<input type="text" name="api_key_value" value="<?=isset($jsons['setting']['api_key'])?$jsons['setting']['api_key']:''?>" readonly >	
-			</p>
 
-			<p>
-				<kbd>CLIENT SECRET</kbd>
-				<input type="text" name="secret_key" value="<?=isset($jsons['setting']['secret_key'])?$jsons['setting']['secret_key']:''?>" readonly>	
-			</p>
+<?php if(!empty($jsons['setting']['api_key'])){ ?>
+	
+	 <p><?=$jsons['setting']['bot_name']?> Discord Bot Configured.</p>
 
 			<p>
 				<kbd>Discord Id</kbd>
@@ -33,5 +28,9 @@
 			<br>
 			<button name="submit" type="submit" class="button-main" value="Submit"><span>Get Auth</span></button>
 <?php echo form_close(); ?>
+
+<?php }else {?>
+        <p>No Discord Bot Configured. Extensions Disabled.</p>
+<?php }?>
 
 
