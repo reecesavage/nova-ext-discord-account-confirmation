@@ -34,37 +34,11 @@ $data['status']='NOK';
            echo json_encode($data);exit;
         }
         
-        if(empty($_POST['botSecret']))
-        {
-
-           $data['error']="Secret is empty";
-           echo json_encode($data);exit;
-           
-        }
-        $simple_string= $_POST['botSecret'];
-  
-
-        // Store the cipher method
-$ciphering = "AES-128-CTR";
-  
-// Use OpenSSl Encryption method
-$iv_length = openssl_cipher_iv_length($ciphering);
-$options = 0;
-  
-// Non-NULL Initialization Vector for encryption
-$encryption_iv = '1234567891011121';
-  
-// Store the encryption key
-$encryption_key = "Nova";
-  
-// Use openssl_encrypt() function to encrypt the data
-$encryption = openssl_encrypt($simple_string, $ciphering,
-            $encryption_key, $options, $encryption_iv);
         
 
         $jsons['setting']['bot_name'] = $_POST['botName'];
         $jsons['setting']['api_key'] = $_POST['botClient'];
-        $jsons['setting']['secret_key'] = $encryption;
+        
 
          $jsonEncode = json_encode($jsons, JSON_PRETTY_PRINT);
 

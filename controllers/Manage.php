@@ -226,33 +226,30 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         $file = file_get_contents($extConfigFilePath);
         $json = json_decode($file, true);
 
-        $encryption=$json['setting']['secret_key'];
-
-        $ciphering = "AES-128-CTR";
-  
-// Use OpenSSl Encryption method
-$iv_length = openssl_cipher_iv_length($ciphering);
-$options = 0;
-
-
-// Non-NULL Initialization Vector for decryption
-$decryption_iv = '1234567891011121';
-  
-// Store the decryption key
-$decryption_key = "Nova";
-  
-// Use openssl_decrypt() function to decrypt the data
-$decryption=openssl_decrypt ($encryption, $ciphering, 
-        $decryption_key, $options, $decryption_iv);
 
 
 
-          
+
+$apiToken= $json['setting']['apiToken'];
+$apiKey= $json['setting']['api_key'];
+$secretUrl="https://dev--sim-central.simcentral.autocode.gg/discordLogin?apiToken=$apiToken&botClient=$apiKey&gameToken=g03%2BYEMUNqSNt43AczWXjK7IqukIiEk8boejPZImW4%2BdYvJ%2BDKhciddooQM5Aorh";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL,$secretUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$secret = curl_exec($ch);
+curl_close($ch);
+
+
+$secret= trim($secret, '""');
+if(!empty($secret))
+{
+
 $url = 'https://discord.com/api/oauth2/token';
 $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
  $data = [
-    'client_id'=> $json['setting']['api_key'],
-    'client_secret'=> $decryption,
+    'client_id'=> $apiKey,
+    'client_secret'=> $secret,
     'grant_type'=> 'authorization_code',
     'code'=> $code,
     'redirect_uri'=> $redirect
@@ -301,7 +298,9 @@ $this->session->set_flashdata('success', "Discord id saved successfully");
 
 
      $this->session->set_flashdata('error', "$result->error");
+}   
 }
+ 
  
 redirect(site_url('extensions/nova_ext_discord_account_confirmation/Manage/discord'));
 }
