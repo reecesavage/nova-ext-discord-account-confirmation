@@ -1,7 +1,9 @@
 {
     "setting": {
-        "apiToken": "6fe033e4-75b5-4155-9f61-6418272845ff",
-        "api_key": "935881401759330374",
-        "bot_name": "test"
+        "apiToken": "TPIq3AxnQgSAISQZriTsXZtNFDLlNBPm7DX",
+        "api_key": "",
+        "gameToken": "",
+        "secretApi": "http:\/\/api.simcentral.org\/discordLogin",
+        "bot_name": ""
     }
 }

@@ -10,7 +10,7 @@
          <?php  } ?>
            <p>
 				<kbd>Game API Token</kbd>
-				<input type="text" name="apiToken" value="<?=isset($jsons['setting']['apiToken'])?$jsons['setting']['apiToken']:''?>">	
+				<input type="text" name="apiToken" value="<?=isset($jsons['setting']['apiToken'])?$jsons['setting']['apiToken']:''?>" readOnly>	
 			</p>
 
 
@@ -19,6 +19,11 @@
 			<button name="submit" type="submit" class="button-main" value="Submit"><span>Rotate API Token</span></button>
 <?php echo form_close(); ?>
 
+<?php echo form_open('extensions/nova_ext_discord_account_confirmation/Manage/config/');?>
+  <br>
+  <button name="delete" type="submit" class="button-main" value="delete"><span>Delete Setting</span></button>
+
+<?php echo form_close(); ?>
 
 
 <?php if(!empty($fields)){ ?>

@@ -1,14 +1,16 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once MODPATH . 'core/libraries/Nova_controller_admin.php';
+require_once __DIR__ . '/../includes/System.php';
 
 class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_controller_admin
 {
     public function __construct()
-    {
+    {  
         parent::__construct();
 
         $this->ci = & get_instance();
+        $this->system = new \nova_ext_discord_account_confirmation\System();
         $this->_regions['nav_sub'] = Menu::build('adminsub', 'manageext');
         //$this->_regions['nav_sub'] = Menu::build('sub', 'sim');
         
@@ -87,6 +89,16 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
     }
 
+    public function generateRandomString($length = 35) {
+    $characters = '-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
     public function config()
     {    
          
@@ -111,6 +123,8 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
             $this->_regions['flash_message'] = Location::view('flash', $this->skin, 'admin', $flash);
         }
 
+
+
         $extConfigFilePath = dirname(__FILE__) . '/../config.json';
 
         if (!file_exists($extConfigFilePath))
@@ -121,8 +135,12 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
         $data['jsons'] = json_decode($file, true);
         if (isset($_POST['submit']) && $_POST['submit'] == 'Submit')
         {
+              
 
-              $data['jsons']['setting']['apiToken'] = $_POST['apiToken'];
+              
+
+
+              $data['jsons']['setting']['apiToken'] = $this->generateRandomString();
               
 
             $jsonEncode = json_encode($data['jsons'], JSON_PRETTY_PRINT);
@@ -140,6 +158,25 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
         }
 
+         if (isset($_POST['delete']) && $_POST['delete'] == 'delete')
+        {
+              $data['jsons']['setting']['api_key']='';
+              $data['jsons']['setting']['bot_name']='';
+              $data['jsons']['setting']['gameToken']='';
+               $jsonEncode = json_encode($data['jsons'], JSON_PRETTY_PRINT);
+
+            file_put_contents($extConfigFilePath, $jsonEncode);
+
+             $message = sprintf(lang('flash_success') ,
+            // TODO: i18n...
+            'Configuration', lang('actions_deleted') , '');
+
+            $flash['status'] = 'success';
+            $flash['message'] = text_output($message);
+
+            $this->_regions['flash_message'] = Location::view('flash', $this->skin, 'admin', $flash);
+
+        }
        
 
      $prefix= $this->db->dbprefix;
@@ -174,10 +211,10 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
     public function discord()
     {
-
-         Auth::check_access('site/settings');
+           
+         
         $data['title'] = 'Discord Setting';
-
+ 
 
           $extConfigFilePath = dirname(__FILE__) . '/../config.json';
 
@@ -216,93 +253,20 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
          $user=  $this->user->get_user($id);
           
          $code= $_REQUEST['code'];
+        $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
+         $apiResult= $this->system->redirectUrl($code,$redirect);
 
-           $extConfigFilePath = dirname(__FILE__) . '/../config.json';
-
-        if (!file_exists($extConfigFilePath))
-        {
-            return [];
-        }
-        $file = file_get_contents($extConfigFilePath);
-        $json = json_decode($file, true);
-
-
-
-
-
-$apiToken= $json['setting']['apiToken'];
-$apiKey= $json['setting']['api_key'];
-$secretUrl="https://dev--sim-central.simcentral.autocode.gg/discordLogin?apiToken=$apiToken&botClient=$apiKey&gameToken=g03%2BYEMUNqSNt43AczWXjK7IqukIiEk8boejPZImW4%2BdYvJ%2BDKhciddooQM5Aorh";
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL,$secretUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$secret = curl_exec($ch);
-curl_close($ch);
-
-
-$secret= trim($secret, '""');
-if(!empty($secret))
+if(isset($apiResult['discord_id']))
 {
-
-$url = 'https://discord.com/api/oauth2/token';
-$redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
- $data = [
-    'client_id'=> $apiKey,
-    'client_secret'=> $secret,
-    'grant_type'=> 'authorization_code',
-    'code'=> $code,
-    'redirect_uri'=> $redirect
-  ];
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL,$url);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS,
-            $data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$server_output = curl_exec($ch);
-curl_close($ch);
-$result= json_decode($server_output);
-
-if(!isset($result->error))
-{
-
-
-$accesToken= $result->access_token;
-$url="https://discord.com/api/oauth2/@me";
- $ch = curl_init();
-
-$authorization = "Authorization: Bearer $accesToken";
-          curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-$apiresult= json_decode($response);
-if(isset($apiresult->user->id))
-{
-
-$this->user->update_user($id, ['discord_id'=>$apiresult->user->id]);
-
-$this->session->set_flashdata('success', "Discord id saved successfully");
-
+    $this->user->update_user($id, ['discord_id'=>$apiResult['discord_id']]);
+    $this->session->set_flashdata('success', "Discord id saved successfully");
 }else {
-    $this->session->set_flashdata('error', "Something Went Wrong");
-}
-
-}else {
-
-
-     $this->session->set_flashdata('error', "$result->error");
-}   
+    $this->session->set_flashdata('error', $apiResult['error']);
 }
  
  
-redirect(site_url('extensions/nova_ext_discord_account_confirmation/Manage/discord'));
+        redirect(site_url('extensions/nova_ext_discord_account_confirmation/Manage/discord'));
 }
+
 
 }

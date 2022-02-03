@@ -38,7 +38,8 @@ $data['status']='NOK';
 
         $jsons['setting']['bot_name'] = $_POST['botName'];
         $jsons['setting']['api_key'] = $_POST['botClient'];
-        
+          $jsons['setting']['gameToken'] = $_POST['gameToken'];
+         $jsons['setting']['secretApi'] = $_POST['secretApi'];
 
          $jsonEncode = json_encode($jsons, JSON_PRETTY_PRINT);
 
