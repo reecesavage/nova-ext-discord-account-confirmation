@@ -1,7 +1,8 @@
 <style>
+	
   .discord-login{
-  	border-radius: 2px; 
-    width: 91%;
+  	border-radius: 4px; 
+    
     
     display: inline-block;
     font-weight: normal;
@@ -20,21 +21,21 @@
     padding-right: 1.25em;
     transition: all 0.2s;
         color: rgb(255, 255, 255);
-    background-color: #353535;
-    border-color: #353535;
+    background-color: #7289DA;
+    border-color: #7289DA;
 
   }
 
   .discord-login:hover,.discord-login:active{
   	    color: rgb(255, 255, 255);
-    background-color: #0349bd;
-    border-color: #0349bd;
+    background-color: #3C45A5;
+    border-color: #3C45A5;
     cursor: pointer;
     text-decoration: none;
   }
 
 </style>
 <p>
-	<a  class ="discord-login" href="<?=site_url('extensions/nova_ext_discord_account_confirmation/Discord/login')?>"><span>Log In Via Discord </span> <i class="fab fa-discord"></i></a>
+	<a  class ="discord-login" href="<?=site_url('extensions/nova_ext_discord_account_confirmation/Discord/login')?>"><i class="fab fa-discord"></i> <span>Login with Discord</span> </a>
 	
 </p>

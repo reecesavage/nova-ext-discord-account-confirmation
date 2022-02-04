@@ -36,7 +36,7 @@ public function login()
 
        $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Discord/redirect');
        $client_id= $data['jsons']['setting']['api_key'];
-       $url= "https://discord.com/api/oauth2/authorize?response_type=code&client_id=$client_id&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=$redirect&prompt=consent";
+       $url= "https://discord.com/api/oauth2/authorize?response_type=code&client_id=$client_id&scope=identify&state=login&redirect_uri=$redirect&prompt=none";
         redirect($url);
 }
 
@@ -44,16 +44,21 @@ public function login()
 public function redirect()
 {   
 
-    
 
+        $state= $_REQUEST['state'];
+         $code= $_REQUEST['code'];
+          if($state=='save')
+        {
+            redirect(site_url("extensions/nova_ext_discord_account_confirmation/Manage/redirect?code=$code"));
+        }
+     
+       
+       
 
-    // redirect(site_url('/login/index'));
-
-
-
-        $code= $_REQUEST['code'];
          $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Discord/redirect');
        $apiResult= $this->system->redirectUrl($code,$redirect);
+
+
        if(isset($apiResult['discord_id']))
         {
         
@@ -91,7 +96,8 @@ public function redirect()
         
         Template::render();
 }else {
-
+$retval = 2;
+            redirect('login/index/error/'.$retval, 'refresh');
 }
       
 }

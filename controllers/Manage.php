@@ -229,9 +229,9 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
       if (isset($_POST['submit']) && $_POST['submit'] == 'Submit')
         {  
 
-          $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
+          $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Discord/redirect');
        $client_id= $data['jsons']['setting']['api_key'];
-       $url= "https://discord.com/api/oauth2/authorize?response_type=code&client_id=$client_id&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=$redirect&prompt=consent";
+       $url= "https://discord.com/api/oauth2/authorize?response_type=code&client_id=$client_id&scope=identify&state=save&redirect_uri=$redirect&prompt=consent";
         redirect($url);
         }
 
@@ -248,13 +248,17 @@ class __extensions__nova_ext_discord_account_confirmation__Manage extends Nova_c
 
      public function redirect()
     {  
-
+      
+        
          $id = $this->session->userdata('userid');
          $user=  $this->user->get_user($id);
           
          $code= $_REQUEST['code'];
-        $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Manage/redirect');
+
+        $redirect= site_url('extensions/nova_ext_discord_account_confirmation/Discord/redirect');
          $apiResult= $this->system->redirectUrl($code,$redirect);
+
+
 
 if(isset($apiResult['discord_id']))
 {

@@ -1,9 +1,9 @@
 {
     "setting": {
-        "apiToken": "TPIq3AxnQgSAISQZriTsXZtNFDLlNBPm7DX",
-        "api_key": "",
-        "gameToken": "",
-        "secretApi": "http:\/\/api.simcentral.org\/discordLogin",
-        "bot_name": ""
+        "apiToken": "oerk3ewoS7x1cFBFMQ1sH7aFmJRif07BNQy",
+        "api_key": "935881401759330374",
+        "gameToken": "b\/BemZEHOeN3Bq7t94YHyvzd0LYkSGJ0irS+fC41CIR8GGS4xDIq6bfxoErBwHqn",
+        "secretApi": "https:\/\/dev--sim-central.simcentral.autocode.gg\/discordLogin",
+        "bot_name": "Sim Central"
     }
 }
